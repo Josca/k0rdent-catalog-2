@@ -64,6 +64,13 @@ jobs:
           mkdir "$GITHUB_WORKSPACE/build"
           app=${{ matrix.folder }}
           for chart in $(find ./apps/$app/charts -mindepth 1 -maxdepth 1 -type d); do
+            echo "Processing chart: $chart"
+            # Conditionally replace GHCR path for forks / non-main branches
+            if [ "${{ github.repository }}" != "k0rdent/catalog" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
+              GHCR_PATH="$(echo "ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/charts" | tr '[:upper:]' '[:lower:]')"
+              echo "Replacing hardcoded OCI paths with dynamic GHCR_PATH for forked/non-main build"
+              find "$chart" -type f -exec sed -i "s|oci://ghcr.io/k0rdent/catalog/charts|oci://$GHCR_PATH|g" {} +
+            fi
             VERSION=$(awk '/^version:/ {print $2}' "$chart/Chart.yaml")
             NAME=$(awk '/^name:/ {print $2}' "$chart/Chart.yaml")
             helm dependency update "$chart"
