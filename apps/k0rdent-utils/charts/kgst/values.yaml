@@ -23,3 +23,4 @@ prefix: ""
 
 # Namespace of service template and helm repo, equals to release namespace by default.
 namespace: ""
+

@@ -10,3 +10,4 @@ metadata:
 spec:
   type: oci
   url: oci://ghcr.io/k0rdent/catalog/charts
+

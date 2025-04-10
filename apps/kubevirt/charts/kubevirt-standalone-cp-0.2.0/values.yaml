@@ -62,3 +62,4 @@ k0s: # @schema description: K0s parameters; type: object
     repository: "" # @schema description: Container image repository to use; type: string
   telemetry: # @schema description: Telemetry configuration; type: object
     enabled: false # @schema description: Whether to enable telemetry; type: boolean
+
