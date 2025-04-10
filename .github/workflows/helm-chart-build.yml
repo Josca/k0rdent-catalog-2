@@ -35,7 +35,7 @@ jobs:
       - name: Get Changed Folders
         id: get-changes
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
+          if [[ ${{ github.ref }} == 'refs/heads/main' ]]; then
             echo "Before: ${{ github.event.before }}"
             echo "Now: ${{ github.sha }}"
             ALL_CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
