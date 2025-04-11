@@ -27,7 +27,7 @@ jobs:
     uses: ./.github/workflows/reusable-build.yml
     with:
       registry: ghcr.io
-      repository: ${{ github.event.repository.name }}/charts
+      repository: ${{ github.repository_owner }}/${{ github.event.repository.name }}/charts
     secrets:
       ACTOR: ${{ github.actor }}
       TOKEN: ${{ secrets.GITHUB_TOKEN }}

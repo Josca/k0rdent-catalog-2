@@ -94,7 +94,7 @@ jobs:
           chart="${{ matrix.folder }}"
           if [ "${{ github.repository }}" != "k0rdent/catalog" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
             GHCR_PATH="$(echo "${{ inputs.registry }}/${{ inputs.repository }}" | tr '[:upper:]' '[:lower:]')"
-            echo "Replacing OCI paths with dynamic GHCR_PATH ($GHCR_PATH) for forked/non-main build"
+            echo "Replacing 'ghcr.io/k0rdent/catalog/charts' with '$GHCR_PATH' for forked/non-main build"
             find "$chart" -type f -exec sed -i "s|oci://ghcr.io/k0rdent/catalog/charts|oci://$GHCR_PATH|g" {} +
             helm dependency update "$chart"
           fi
