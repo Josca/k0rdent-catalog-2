@@ -92,6 +92,7 @@ jobs:
         run: |
           mkdir "$GITHUB_WORKSPACE/build"
           chart="${{ matrix.folder }}"
+          echo "Repository: ${{ inputs.repository }}"
           if [ "${{ github.repository }}" != "k0rdent/catalog" ] && [ "${{ github.ref }}" != "refs/heads/main" ]; then
             GHCR_PATH="$(echo "${{ inputs.registry }}/${{ inputs.repository }}" | tr '[:upper:]' '[:lower:]')"
             echo "Replacing 'ghcr.io/k0rdent/catalog/charts' with '$GHCR_PATH' for forked/non-main build"
@@ -108,6 +109,7 @@ jobs:
       - name: Push Helm Chart
         if: github.event_name == 'push'
         run: |
+          echo "Repository: ${{ inputs.repository }}"
           for PACKAGE_FILE in "$GITHUB_WORKSPACE"/build/*.tgz; do
             echo "Pushing $PACKAGE_FILE to oci://${{ inputs.registry }}/${{ inputs.repository }}"
             helm push "$PACKAGE_FILE" "oci://${{ inputs.registry }}/${{ inputs.repository }}"
