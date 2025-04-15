@@ -1,0 +1,71 @@
+name: Cleanup untagged artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Preview only (true) or actually delete (false)'
+        required: false
+        default: 'true'
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Install GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+
+      - name: List and optionally delete untagged versions
+        env:
+          GH_OWNER: ${{ github.repository_owner }}
+          DRY_RUN: ${{ github.event.inputs.dry-run }}
+        run: |
+          echo "Starting cleanup for owner: $GH_OWNER"
+          echo "Dry run mode: $DRY_RUN"
+
+          # Get all container packages for user/org
+          gh api "users/$GH_OWNER/packages?package_type=container" --paginate > packages.json || \
+          gh api "orgs/$GH_OWNER/packages?package_type=container" --paginate > packages.json
+
+          PACKAGE_COUNT=$(jq length packages.json)
+          echo "Found $PACKAGE_COUNT container packages"
+
+          for i in $(seq 0 $((PACKAGE_COUNT - 1))); do
+            PACKAGE_NAME=$(jq -r ".[$i].name" packages.json)
+            echo ""
+            echo "🔍 Processing package: $PACKAGE_NAME"
+
+            # Get all versions of the package
+            gh api "users/$GH_OWNER/packages/container/$PACKAGE_NAME/versions" --paginate 2>/dev/null || \
+            gh api "orgs/$GH_OWNER/packages/container/$PACKAGE_NAME/versions" --paginate > versions.json
+
+            # Get untagged version IDs
+            UNTAGGED_IDS=$(jq -r '.[] | select(.metadata.container.tags == null) | .id' versions.json)
+            COUNT=$(echo "$UNTAGGED_IDS" | wc -l)
+
+            if [ -z "$UNTAGGED_IDS" ]; then
+              echo "✅ No untagged versions found."
+              continue
+            fi
+
+            echo "⚠️ Found $COUNT untagged version(s)."
+
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "📝 Would delete the following versions:"
+              echo "$UNTAGGED_IDS"
+            else
+              echo "🗑️ Deleting $COUNT untagged version(s)..."
+              echo "$UNTAGGED_IDS" | while read version_id; do
+                echo "Deleting version $version_id..."
+                gh api --method DELETE "users/$GH_OWNER/packages/container/$PACKAGE_NAME/versions/$version_id" 2>/dev/null || \
+                gh api --method DELETE "orgs/$GH_OWNER/packages/container/$PACKAGE_NAME/versions/$version_id"
+              done
+            fi
+          done
