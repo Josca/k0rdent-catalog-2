@@ -2,12 +2,15 @@
 AKS
 APIs
 Affero
+AlertManager
+Alerta
 Alletra
 ArangoDB
 ArangoGraph
 Automagical
 Autoscaler
 B10000
+Blackbox
 CAPI
 CLI
 CNCF
@@ -17,6 +20,7 @@ CSI
 CVE
 ClearML
 CloudCasa
+CustomResourceDefinition
 DL
 DNS
 Dapr
@@ -32,6 +36,7 @@ FIPs
 Falco
 FlashArray
 FlashBlade
+Fluentd
 GCE
 GCP
 GCS
@@ -50,6 +55,7 @@ Istio
 Istio’s
 JSON
 K0rdent
+K8s
 KEDA
 KServe
 Knative
@@ -65,6 +71,7 @@ L4
 L7
 LLM
 LLMOps
+LMA
 LTS
 LoadBalancer
 MLOps
@@ -88,12 +95,12 @@ Ollama
 OpenAI
 OpenCost
 OpenID
+OpenSearch
 OpenStack
 Orchestrators
 PGBouncer
 Patroni
 Pluggable
-Postgres
 Prem
 RBAC
 RayCluster
@@ -104,8 +111,9 @@ SLAs
 SaaS
 Scalable
 Serverless
+ServiceTemplate
 SoundCloud
-Spilo
+StackLight
 TLS
 Terraform
 UI
@@ -121,6 +129,7 @@ YAML
 Zalando
 ai
 autoscaling
+backend
 balancer
 balancers
 basebackup
@@ -158,6 +167,8 @@ nvidia
 observability
 onnx
 openwebui
+postgres
+postgresql
 pre
 prem
 provisioner
@@ -166,11 +177,15 @@ readthedocs
 scalable
 scikit
 serverless
+spilo
+stacklights
 stateful
 tensorflow
+timeseries
 toolchain
 v3
 vSphere
+virtualzation
 webapp
 webui
 www
